@@ -15,8 +15,8 @@ import {
 } from "@dnd-kit/core"
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import { restrictToWindowEdges } from "@dnd-kit/modifiers"
-import TodoColumn from "./todo-column"
-import TodoItem from "./todo-item"
+import TodoColumn from "@/components/todo-column"
+import TodoItem from "@/components/todo-item"
 
 type Todo = {
     id: string
