@@ -1,24 +1,20 @@
 "use client"
 
 import { useState } from "react"
+import {listTodos, oneTodo, Todo} from "../../schema/todo_schema";
+import {z} from "zod";
 
-type Todo = {
-    id: string
-    title: string
-    description: string
-    status: string
-}
 
 type TodoItemProps = {
-    todo: Todo
+    todo: z.infer<typeof oneTodo>
     onDelete: (id: string) => void
     isOverlay?: boolean
 }
 
 export default function TodoItem({ todo, onDelete, isOverlay = false }: TodoItemProps) {
     const [isEditing, setIsEditing] = useState(false)
-    const [editedTitle, setEditedTitle] = useState(todo.title)
-    const [editedDescription, setEditedDescription] = useState(todo.description)
+    const [editedTitle, setEditedTitle] = useState(todo.Title)
+    const [editedDescription, setEditedDescription] = useState(todo.Description)
 
     const handleSave = () => {
         // In a real app, you would update the database here
@@ -27,8 +23,8 @@ export default function TodoItem({ todo, onDelete, isOverlay = false }: TodoItem
     }
 
     const handleCancel = () => {
-        setEditedTitle(todo.title)
-        setEditedDescription(todo.description)
+        setEditedTitle(todo.Title)
+        setEditedDescription(todo.Description)
         setIsEditing(false)
     }
 
@@ -86,8 +82,8 @@ export default function TodoItem({ todo, onDelete, isOverlay = false }: TodoItem
                 </div>
             ) : (
                 <div className="card-body p-4">
-                    <h3 className="card-title text-base">{todo.title}</h3>
-                    <p className="text-sm text-base-content/70">{todo.description}</p>
+                    <h3 className="card-title text-base">{todo.Title}</h3>
+                    <p className="text-sm text-base-content/70">{todo.Description}</p>
                     {!isOverlay && (
                         <div className="card-actions justify-between mt-2">
                             <div className="flex gap-2">
@@ -107,7 +103,7 @@ export default function TodoItem({ todo, onDelete, isOverlay = false }: TodoItem
                                     </svg>
                                     Edit
                                 </button>
-                                <button className="btn btn-sm btn-outline btn-error" onClick={() => onDelete(todo.id)}>
+                                <button className="btn btn-sm btn-outline btn-error" onClick={() => onDelete(todo.TodoID)}>
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         className="h-4 w-4 mr-1"
@@ -127,9 +123,9 @@ export default function TodoItem({ todo, onDelete, isOverlay = false }: TodoItem
                                 </button>
                             </div>
                             <div className="badge">
-                                {todo.status === "todo" && "To Do"}
-                                {todo.status === "in-progress" && "In Progress"}
-                                {todo.status === "done" && "Done"}
+                                {todo.Status === "Todo" && "To Do"}
+                                {todo.Status === "InProgress" && "In Progress"}
+                                {todo.Status === "Done" && "Done"}
                             </div>
                         </div>
                     )}

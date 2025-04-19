@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const todoSchema = z.object({
+export const oneTodo = z.object({
     TodoID: z.coerce.string(),
     UserID: z.coerce.string(),
     Title: z.coerce.string(),
@@ -10,4 +10,11 @@ export const todoSchema = z.object({
     UpdatedAt: z.coerce.string(),
 });
 
-export const todos = z.array(todoSchema)
+export const listTodos = z.array(oneTodo)
+
+export type Todo = {
+    id: string
+    title: string
+    description: string
+    status: string
+}

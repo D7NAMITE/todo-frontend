@@ -11,7 +11,7 @@ const mockTodos = [
     { id: "5", title: "Connect to database", description: "Set up database connection", status: "done" },
 ]
 
-const todoData = getTodoByUid
+const todoData = await getTodoByUid() ?? []
 
 
 export default function Dashboard() {
@@ -40,7 +40,7 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            <KanbanBoard initialTodos={mockTodos} />
+            <KanbanBoard initialTodos={todoData} />
         </main>
     )
 }
