@@ -17,31 +17,27 @@ import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import { restrictToWindowEdges } from "@dnd-kit/modifiers"
 import TodoColumn from "@/components/todo-column"
 import TodoItem from "@/components/todo-item"
+import {listTodos, Todo} from "../../schema/todo_schema";
+import {z} from "zod";
 
-type Todo = {
-    id: string
-    title: string
-    description: string
-    status: string
-}
 
-type KanbanBoardProps = {
-    initialTodos: Todo[]
-}
-
-export default function KanbanBoard({ initialTodos }: KanbanBoardProps) {
+export default function KanbanBoard({
+                                        initialTodos,
+                                    }: {
+    initialTodos: z.infer<typeof listTodos>
+}) {
     const [todos, setTodos] = useState(initialTodos)
     const [activeId, setActiveId] = useState<string | null>(null)
 
     // Group todos by status
     const columns = {
-        todo: todos.filter((todo) => todo.status === "todo"),
-        "in-progress": todos.filter((todo) => todo.status === "in-progress"),
-        done: todos.filter((todo) => todo.status === "done"),
+        todo: todos.filter((todo) => todo.Status === "Todo"),
+        "In-progress": todos.filter((todo) => todo.Status === "InProgress"),
+        done: todos.filter((todo) => todo.Status === "Done"),
     }
 
     // Find the active todo
-    const activeTodo = activeId ? todos.find((todo) => todo.id === activeId) : null
+    const activeTodo = activeId ? todos.find((todo) => todo.TodoID === activeId) : null
 
     // Configure sensors for drag detection
     const sensors = useSensors(
@@ -79,11 +75,11 @@ export default function KanbanBoard({ initialTodos }: KanbanBoardProps) {
         }
 
         setTodos((prev) => {
-            const activeTodo = prev.find((todo) => todo.id === activeId)
+            const activeTodo = prev.find((todo) => todo.TodoID === activeId)
             if (!activeTodo) return prev
 
             // Create a new array without the dragged todo
-            const newTodos = prev.filter((todo) => todo.id !== activeId)
+            const newTodos = prev.filter((todo) => todo.TodoID !== activeId)
 
             // Create a new todo with the updated status
             const updatedTodo = {
@@ -125,8 +121,8 @@ export default function KanbanBoard({ initialTodos }: KanbanBoardProps) {
         const activeItems = columns[activeContainer as keyof typeof columns]
 
         // Find the indices of the active and over items
-        const activeIndex = activeItems.findIndex((item) => item.id === activeId)
-        const overIndex = activeItems.findIndex((item) => item.id === overId)
+        const activeIndex = activeItems.findIndex((item) => item.TodoID === activeId)
+        const overIndex = activeItems.findIndex((item) => item.TodoID === overId)
 
         // If the indices are the same, the item was dropped in the same place
         if (activeIndex === overIndex) {
@@ -135,11 +131,11 @@ export default function KanbanBoard({ initialTodos }: KanbanBoardProps) {
 
         // Reorder the items in the active container
         setTodos((prev) => {
-            const activeItems = prev.filter((item) => item.status === activeContainer)
+            const activeItems = prev.filter((item) => item.Status === activeContainer)
             const reorderedItems = arrayMove(activeItems, activeIndex, overIndex)
 
             // Create a new array with the reordered items
-            return [...prev.filter((item) => item.status !== activeContainer), ...reorderedItems]
+            return [...prev.filter((item) => item.Status !== activeContainer), ...reorderedItems]
         })
     }
 
@@ -149,12 +145,12 @@ export default function KanbanBoard({ initialTodos }: KanbanBoardProps) {
             return id
         }
 
-        const todo = todos.find((todo) => todo.id === id)
-        return todo?.status
+        const todo = todos.find((todo) => todo.TodoID === id)
+        return todo?.Status
     }
 
     const deleteTodo = (id: string) => {
-        setTodos(todos.filter((todo) => todo.id !== id))
+        setTodos(todos.filter((todo) => todo.TodoID !== id))
         // In a real app, you would delete from the database
         // deleteTodoFromDatabase(id);
     }
@@ -172,7 +168,7 @@ export default function KanbanBoard({ initialTodos }: KanbanBoardProps) {
                 <TodoColumn id="todo" title="To Do" todos={columns.todo} onDelete={deleteTodo} />
 
                 {/* In Progress Column */}
-                <TodoColumn id="in-progress" title="In Progress" todos={columns["in-progress"]} onDelete={deleteTodo} />
+                <TodoColumn id="in-progress" title="In Progress" todos={columns["In-progress"]} onDelete={deleteTodo} />
 
                 {/* Done Column */}
                 <TodoColumn id="done" title="Done" todos={columns.done} onDelete={deleteTodo} />

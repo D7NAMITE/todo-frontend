@@ -1,5 +1,6 @@
 import KanbanBoard from "@/components/kanban-board"
 import Link from "next/link"
+import {getTodoByUid} from "@/action/todo_action";
 
 // This would come from your database in a real application
 const mockTodos = [
@@ -9,6 +10,9 @@ const mockTodos = [
     { id: "4", title: "Create Kanban board", description: "Implement drag and drop", status: "in-progress" },
     { id: "5", title: "Connect to database", description: "Set up database connection", status: "done" },
 ]
+
+const todoData = await getTodoByUid() ?? []
+
 
 export default function Dashboard() {
     return (
@@ -36,7 +40,7 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            <KanbanBoard initialTodos={mockTodos} />
+            <KanbanBoard initialTodos={todoData} />
         </main>
     )
 }
