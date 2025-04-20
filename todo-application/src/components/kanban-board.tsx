@@ -19,6 +19,7 @@ import TodoColumn from "@/components/todo-column"
 import TodoItem from "@/components/todo-item"
 import {listTodos, Todo} from "../../schema/todo_schema";
 import {z} from "zod";
+import {deleteTodoFromDB} from "@/action/todo_action";
 
 
 export default function KanbanBoard({
@@ -32,7 +33,7 @@ export default function KanbanBoard({
     // Group todos by status
     const columns = {
         todo: todos.filter((todo) => todo.Status === "Todo"),
-        "In-progress": todos.filter((todo) => todo.Status === "InProgress"),
+        "In-progress": todos.filter((todo) => todo.Status === "In Progress"),
         done: todos.filter((todo) => todo.Status === "Done"),
     }
 
@@ -149,10 +150,10 @@ export default function KanbanBoard({
         return todo?.Status
     }
 
-    const deleteTodo = (id: string) => {
+    const deleteTodo = async (id: string) => {
         setTodos(todos.filter((todo) => todo.TodoID !== id))
         // In a real app, you would delete from the database
-        // deleteTodoFromDatabase(id);
+        await deleteTodoFromDB(id)
     }
 
     return (
