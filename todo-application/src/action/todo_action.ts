@@ -69,3 +69,36 @@ export async function createTodo(Title: string, Description: string, Status:stri
         return { success: false, projectId: "", error: String(fetchError) };
     }
 }
+
+interface DeleteTodoParams {
+    TodoID: string
+}
+
+export async function deleteTodoFromDB(todoID: string) {
+    try {
+        const params: DeleteTodoParams = {
+            TodoID: todoID
+        }
+        console.log(params)
+        const todo = await fetch(`${backendUrl}/todo/delete`, {
+            method: "POST",
+            body: JSON.stringify(params),
+        });
+
+        if (!todo.ok) {
+            console.error(`Server responded with status: ${todo.status}`);
+            return {
+                error: `Server error: ${todo.status}`,
+            };
+        }
+
+        const responseText = await todo.text();
+
+        const result = { success: true, projectId: responseText };
+        console.log(result);
+        return result;
+    } catch (fetchError) {
+        console.error("Fetch error:", fetchError);
+        return { success: false, projectId: "", error: String(fetchError) };
+    }
+}
