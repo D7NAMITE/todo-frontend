@@ -32,7 +32,7 @@ export default function KanbanBoard({
     // Group todos by status
     const columns = {
         todo: todos.filter((todo) => todo.Status === "Todo"),
-        "In-progress": todos.filter((todo) => todo.Status === "InProgress"),
+        "In-progress": todos.filter((todo) => todo.Status === "In Progress"),
         done: todos.filter((todo) => todo.Status === "Done"),
     }
 

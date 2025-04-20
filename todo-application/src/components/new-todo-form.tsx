@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import {createTodo} from "@/action/todo_action";
 
 export default function NewTodoForm() {
     const [isLoading, setIsLoading] = useState(false)
@@ -18,14 +19,8 @@ export default function NewTodoForm() {
         const description = formData.get("description") as string
         const status = formData.get("status") as string
 
-        // This would be a real API call in a production app
         try {
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-
-            // In a real app, you would create a new todo in the database
-            // const newTodo = await createTodo({ title, description, status });
-
+            await createTodo(title, description, status);
             router.push("/")
         } catch (error) {
             console.error("Failed to create todo:", error)
@@ -61,9 +56,9 @@ export default function NewTodoForm() {
                         <span className="label-text">Status</span>
                     </label>
                     <select name="status" className="select select-bordered w-full" defaultValue="todo">
-                        <option value="todo">To Do</option>
-                        <option value="in-progress">In Progress</option>
-                        <option value="done">Done</option>
+                        <option value="Todo">To Do</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Done">Done</option>
                     </select>
                 </div>
 
@@ -71,7 +66,7 @@ export default function NewTodoForm() {
                     <button
                         type="button"
                         className="btn btn-outline"
-                        onClick={() => router.push("/dashboard")}
+                        onClick={() => router.push("/")}
                         disabled={isLoading}
                     >
                         Cancel
