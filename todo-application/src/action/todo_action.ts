@@ -6,24 +6,38 @@ import {auth} from '@clerk/nextjs/server'
 const backendUrl = process.env.BACKEND_URL;
 
 
-export async function getTodoByUid() {
-    const {userId} = await auth()
-    if (!userId) {
-        throw new Error("Unauthorized: user not authenticated");
-    }
-    try {
-        const todo = await fetch(`${backendUrl}/todo/user/${userId}`);
-        if (!todo.ok) {
-            console.error("Failed to fetch todo")
-            return []
-        }
-        const data = await todo.json();
-        return listTodos.parse(data);
+export interface TodoItem {
+    TodoID: string;
+    ClerkID: string;
+    Title: string;
+    Description: string;
+    Status: string;
+    CreatedAt: string;
+    UpdatedAt: string;
+}
 
+export async function getTodoById() {
+    try {
+        const {userId} = await auth()
+        const res = await fetch(`http://localhost:8080/todo/user/${userId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!res.ok) {
+            throw new Error(`Failed to fetch todos for user ${userId}`);
+        }
+
+        const data: TodoItem[] = await res.json();
+        return data;
     } catch (error) {
-        console.error("Failed to fetch todo")
+        console.error("Error fetching todos:", error);
+        return [];
     }
 }
+
 
 interface CreateTodoParams {
     UserID: string;
@@ -32,7 +46,7 @@ interface CreateTodoParams {
     Status: string;
 }
 
-export async function createTodo(Title: string, Description: string, Status:string) {
+export async function createTodo(title: string, description: string, status:string) {
     const { userId } = await auth();
     if (!userId) {
         return {
@@ -42,9 +56,9 @@ export async function createTodo(Title: string, Description: string, Status:stri
     try {
         const params: CreateTodoParams = {
             UserID: userId,
-            Title: Title,
-            Description: Description,
-            Status: Status,
+            Title: title,
+            Description: description,
+            Status: status,
         }
         console.log(params)
         const todo = await fetch(`${backendUrl}/todo/new`, {
@@ -65,7 +79,7 @@ export async function createTodo(Title: string, Description: string, Status:stri
         console.log(result);
         return result;
     } catch (fetchError) {
-        console.error("Fetch error:", fetchError);
+        console.error("Create error:", fetchError);
         return { success: false, projectId: "", error: String(fetchError) };
     }
 }
@@ -98,7 +112,46 @@ export async function deleteTodoFromDB(todoID: string) {
         console.log(result);
         return result;
     } catch (fetchError) {
-        console.error("Fetch error:", fetchError);
+        console.error("Delete error:", fetchError);
+        return { success: false, projectId: "", error: String(fetchError) };
+    }
+}
+
+interface UpdateTodoParams {
+    TodoID: string;
+    Title: string;
+    Description: string;
+    Status: string;
+}
+
+export async function updateTodoFromDB(todoID: string, title: string, description: string, status:string) {
+    try {
+        const params: UpdateTodoParams = {
+            TodoID: todoID,
+            Title: title,
+            Description: description,
+            Status: status,
+        }
+        console.log(params)
+        const todo = await fetch(`${backendUrl}/todo/update`, {
+            method: "POST",
+            body: JSON.stringify(params),
+        });
+
+        if (!todo.ok) {
+            console.error(`Server responded with status: ${todo.status}`);
+            return {
+                error: `Server error: ${todo.status}`,
+            };
+        }
+
+        const responseText = await todo.text();
+
+        const result = { success: true, projectId: responseText };
+        console.log(result);
+        return result;
+    } catch (fetchError) {
+        console.error("Update error:", fetchError);
         return { success: false, projectId: "", error: String(fetchError) };
     }
 }

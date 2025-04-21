@@ -3,10 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import {
     ClerkProvider,
-    SignInButton,
-    SignedIn,
-    SignedOut,
-
 } from "@clerk/nextjs";
 import Header from "@/components/header";
 
@@ -37,17 +33,7 @@ export default function RootLayout({
             <body className="bg-base-100">
             <Header/>
             <main>
-                <SignedIn>{children}</SignedIn>
-                <SignedOut>
-                    <div className="flex items-center justify-center h-[80vh]">
-                        <div className="text-center">
-                            <p className="text-lg mb-4">Please sign in to continue</p>
-                            <SignInButton mode="modal">
-                                <button className="btn btn-primary">Sign In</button>
-                            </SignInButton>
-                        </div>
-                    </div>
-                </SignedOut>
+                {children}
             </main>
             </body>
             </html>
