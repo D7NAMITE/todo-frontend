@@ -83,7 +83,7 @@ export default function TodoPage() {
                 {todos.map((todo) => (
                     <li
                         key={todo.TodoID}
-                        className="flex flex-col bg-base-300 border rounded p-4 shadow-xl"
+                        className="flex flex-col bg-base-300 rounded p-4 shadow-xl"
                     >
                         <div className="flex justify-between items-start">
                             <div>
