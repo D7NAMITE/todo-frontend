@@ -1,4 +1,4 @@
-# todo-frontend
+# Todo Frontend
 
 ## Prerequisites
 * Node.js 22+
@@ -20,3 +20,4 @@
     ```bash
     pnpm dev
     ```
+5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
